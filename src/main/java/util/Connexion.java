@@ -13,11 +13,11 @@ public class Connexion {
     // String nameDatabase = "enchere";
     String nameDatabase = "railway";
     // String url = "jdbc:postgresql://localhost:5432/"+nameDatabase;
-    String url = "jdbc:postgresql://containers-us-west-134.railway.app:6124/"+nameDatabase;
+    String url = "jdbc:postgresql://containers-us-west-40.railway.app:6615/"+nameDatabase;
     // String user = "itu";
     String user = "postgres";
     // String password = "0";
-    String password = "atpeoFWtkUC4HmQWkR6a";
+    String password = "jGvfI4QaZDZbKgjnrI10";
     //    Boolean autoCommit = false;
 
     public Connection getConnexion()throws Exception{
