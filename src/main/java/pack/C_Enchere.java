@@ -55,14 +55,16 @@ public class C_Enchere {
      }
 
     @GetMapping("/enchere_get_gagnant/{id}")
-     public String get_gagnant(@PathVariable int id)
+     public ResponseEntity get_gagnant(@PathVariable int id)
      {
         Enchere enchere=null;
         Utilisateur utilisateur=null;
         Gagnant gagnant=null;
         Detailsenchere details=null;
-        JSONObject obj=new JSONObject();    
+        JSONArray liste=null;
         try {
+            liste=new JSONArray();
+            JSONObject obj=new JSONObject();    
             enchere=new S_Enchere().get(id);
             utilisateur=S_Enchere.get_utilisateur(enchere);
             gagnant=S_Enchere.get_gagnant(enchere);
@@ -76,6 +78,33 @@ public class C_Enchere {
             obj.put("iddetailsenchere",details.getiddetailsenchere());       
             obj.put("datemise",details.getdatemise());    
             obj.put("mise",details.getmise());
+                liste.add(obj);
+           return ResponseEntity.accepted().body(details);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            // return e.getMessage();
+        }
+        return null;
+     }
+
+
+    @GetMapping("/get_byid/{id}")
+     public String get_byid(@PathVariable int id)
+     {
+        Enchere enchere=null;
+        Utilisateur utilisateur=null;
+        Categorie categorie=null;
+        JSONObject obj=new JSONObject();    
+        try {
+            enchere=new S_Enchere().get(id);
+            utilisateur=S_Enchere.get_utilisateur(enchere);
+            categorie=new S_Categorie().get(enchere.getidcategorie());
+            obj.put("idutilisateur",utilisateur.getidutilisateur());    
+            obj.put("nom",utilisateur.getnom());    
+            obj.put("prenom",utilisateur.getprenom());    
+            obj.put("email",utilisateur.getemail());    
+            obj.put("categorie",categorie.getcategorie());
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,6 +112,7 @@ public class C_Enchere {
         }
         return obj.toJSONString();
      }
+
 
       @GetMapping("/enchere_details/{id}")
      public ResponseEntity get_details(@PathVariable int id)
@@ -114,70 +144,53 @@ public class C_Enchere {
         return null;
      }
 
-    @GetMapping("/get_enchere/{etat}")
-     public ResponseEntity get_enchere(@PathVariable int etat)
+    @GetMapping("/get_enchere/{etat}/{id}")
+     public ResponseEntity get_enchere(@PathVariable int etat,@PathVariable int id)
      {
         Enchere[] enchere=null;
-        Categorie categorie=null;
-        Utilisateur utilisateur=null;
         JSONArray liste=null;
         try {
             enchere=new S_Enchere().getall(etat);
-            liste =new JSONArray();    
+            liste =new JSONArray();
+            Categorie categorie=null;
+            Utilisateur utilisateur=null;
             for(int i=0;i<enchere.length;i++){
+                Detailsenchere[] details=null;
                 categorie=new S_Categorie().get(enchere[i].getidcategorie());
                 utilisateur=new S_Utilisateur().get(enchere[i].getidutilisateur());
+                details=S_Enchere.liste_details_enchere(enchere[i]);
+                // int misy=0;
+                // if (details!=null) {
+                //     for (int o=0;o<details.length ;i++ ) { if (details[o].getidutilisateur()==id) { misy=1; } }
+                // }
                 JSONObject obj=new JSONObject();
-                obj.put("idenchere",enchere[i].getidenchere());    
-                obj.put("produit",enchere[i].getproduit());    
-                obj.put("prix_planche",enchere[i].getprix_planche());    
-                obj.put("duree",enchere[i].getduree());    
-                obj.put("ajout",enchere[i].getajout());    
-                obj.put("description",enchere[i].getdescription());    
-                obj.put("etat",enchere[i].getetat());
-                obj.put("categorie",categorie.getcategorie());
-                obj.put("idutilisateur",utilisateur.getidutilisateur());    
-                obj.put("nom",utilisateur.getnom());    
-                obj.put("prenom",utilisateur.getprenom());    
-                obj.put("email",utilisateur.getemail()); 
-                liste.add(obj);
-            }
-            return ResponseEntity.accepted().body(liste);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            // return e.getMessage();
-        }
-        return null;
-     }
-
-     @GetMapping("/getAllEnchere/")
-     public ResponseEntity get_enchereRehetra()
-     {
-        Enchere[] enchere=null;
-        Categorie categorie=null;
-        Utilisateur utilisateur=null;
-        JSONArray liste=null;
-        try {
-            enchere=new S_Enchere().getRehetra();
-            liste =new JSONArray();    
-            for(int i=0;i<enchere.length;i++){
-                categorie=new S_Categorie().get(enchere[i].getidcategorie());
-                utilisateur=new S_Utilisateur().get(enchere[i].getidutilisateur());
-                JSONObject obj=new JSONObject();
-                obj.put("idenchere",enchere[i].getidenchere());    
-                obj.put("produit",enchere[i].getproduit());    
-                obj.put("prix_planche",enchere[i].getprix_planche());    
-                obj.put("duree",enchere[i].getduree());    
-                obj.put("ajout",enchere[i].getajout());    
-                obj.put("description",enchere[i].getdescription());    
-                obj.put("etat",enchere[i].getetat());
-                obj.put("categorie",categorie.getcategorie());
-                obj.put("idutilisateur",utilisateur.getidutilisateur());    
-                obj.put("nom",utilisateur.getnom());    
-                obj.put("prenom",utilisateur.getprenom());    
-                obj.put("email",utilisateur.getemail()); 
-                liste.add(obj);
+                if(utilisateur.getidutilisateur()!=id){
+                    if (details.length==0) {
+                        obj.put("mise",000);    
+                        obj.put("nom_mise","");    
+                        obj.put("prenom_mise","");    
+                        obj.put("datemise","");
+                    }
+                    if (details.length!=0) {
+                        obj.put("mise",details[details.length-1].getmise());    
+                        obj.put("nom_mise",new S_Utilisateur().get(details[details.length-1].getidutilisateur()).getnom());    
+                        obj.put("prenom_mise",new S_Utilisateur().get(details[details.length-1].getidutilisateur()).getprenom());    
+                        obj.put("datemise",details[details.length-1].getdatemise());
+                    }
+                    obj.put("idenchere",enchere[i].getidenchere());    
+                    obj.put("produit",enchere[i].getproduit());    
+                    obj.put("prix_planche",enchere[i].getprix_planche());    
+                    obj.put("duree",enchere[i].getduree());    
+                    obj.put("ajout",enchere[i].getajout());    
+                    obj.put("description",enchere[i].getdescription());    
+                    obj.put("etat",enchere[i].getetat());
+                    obj.put("categorie",categorie.getcategorie());
+                    obj.put("idutilisateur",utilisateur.getidutilisateur());    
+                    obj.put("nom",utilisateur.getnom());    
+                    obj.put("prenom",utilisateur.getprenom());    
+                    obj.put("email",utilisateur.getemail()); 
+                    liste.add(obj);
+                }
             }
             return ResponseEntity.accepted().body(liste);
             
@@ -232,27 +245,40 @@ public class C_Enchere {
         }
         return null;
      }
-     @GetMapping("/get_byid/{id}")
-     public String get_byid(@PathVariable int id)
+      @GetMapping("/getAllEnchere/")
+     public ResponseEntity get_enchereRehetra()
      {
-        Enchere enchere=null;
-        Utilisateur utilisateur=null;
+        Enchere[] enchere=null;
         Categorie categorie=null;
-        JSONObject obj=new JSONObject();    
+        Utilisateur utilisateur=null;
+        JSONArray liste=null;
         try {
-            enchere=new S_Enchere().get(id);
-            utilisateur=S_Enchere.get_utilisateur(enchere);
-            categorie=new S_Categorie().get(enchere.getidcategorie());
-            obj.put("idutilisateur",utilisateur.getidutilisateur());    
-            obj.put("nom",utilisateur.getnom());    
-            obj.put("prenom",utilisateur.getprenom());    
-            obj.put("email",utilisateur.getemail());    
-            obj.put("categorie",categorie.getcategorie());
+            enchere=new S_Enchere().getRehetra();
+            liste =new JSONArray();    
+            for(int i=0;i<enchere.length;i++){
+                categorie=new S_Categorie().get(enchere[i].getidcategorie());
+                utilisateur=new S_Utilisateur().get(enchere[i].getidutilisateur());
+                JSONObject obj=new JSONObject();
+                obj.put("idenchere",enchere[i].getidenchere());    
+                obj.put("produit",enchere[i].getproduit());    
+                obj.put("prix_planche",enchere[i].getprix_planche());    
+                obj.put("duree",enchere[i].getduree());    
+                obj.put("ajout",enchere[i].getajout());    
+                obj.put("description",enchere[i].getdescription());    
+                obj.put("etat",enchere[i].getetat());
+                obj.put("categorie",categorie.getcategorie());
+                obj.put("idutilisateur",utilisateur.getidutilisateur());    
+                obj.put("nom",utilisateur.getnom());    
+                obj.put("prenom",utilisateur.getprenom());    
+                obj.put("email",utilisateur.getemail()); 
+                liste.add(obj);
+            }
+            return ResponseEntity.accepted().body(liste);
             
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getMessage();
+            // return e.getMessage();
         }
-        return obj.toJSONString();
+        return null;
      }
  }

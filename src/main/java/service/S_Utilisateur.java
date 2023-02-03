@@ -23,6 +23,7 @@ public class S_Utilisateur {
             connexion = new Connexion();
             Object[] o=Requete.select(connexion.getConnexion(),new Utilisateur(),condition,value,signe);
             utilisateur=(Utilisateur)o[0];
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Utilisateur.get(id) : "+e);
@@ -44,12 +45,73 @@ public class S_Utilisateur {
             for (int i=0;i<o.length ;i++ ) {
                 enchere[i]=(Enchere)o[i];
             }
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Utilisateur.get_enchere(Utilisateur) : "+e);
             e.printStackTrace();
         }
         return enchere;
+    }
+
+    public static Detailsenchere[] get_enchere_encours(Utilisateur utilisateur) throws Exception{
+        Detailsenchere[] details=null;
+        Detailsenchere[] dtls=null;
+        Enchere[] enchere=null;
+        int taille=0;
+        try{
+            Detailsenchere[] d=S_Detailsenchere.get_by_utilisateur(utilisateur.getidutilisateur());
+            for (int i=0;i<d.length ;i++ ) {
+                if (new S_Enchere().get(d[i].getidenchere()).getetat()==0) {
+                    taille=taille+1;
+                }
+            }
+            details=new Detailsenchere[taille];
+            enchere=new Enchere[taille];
+            taille=0;
+            for (int i=0;i<d.length ;i++ ) {
+                if (new S_Enchere().get(d[i].getidenchere()).getetat()==0) {
+                    enchere[i]=new S_Enchere().get(d[i].getidenchere());
+                    details[taille]=d[i];
+                    taille=taille+1;
+                }
+            }
+            taille=0;
+            for (int i=0;i<enchere.length ;i++ ) {
+                    int n=0;
+                if(i!=enchere.length-1){
+                    for (int v=i+1;v<enchere.length ;v++ ) {
+                        if (enchere[i].getidenchere()==enchere[v].getidenchere()) {
+                            n=1;
+                        }
+                    }
+                }
+                if (n==0) {
+                    taille=taille+1;
+                }
+            }
+            dtls=new Detailsenchere[taille];
+            taille=0;
+            for (int i=0;i<enchere.length ;i++ ) {
+                    int n=0;
+                if(i!=enchere.length-1){
+                    for (int v=i+1;v<enchere.length ;v++ ) {
+                        if (enchere[i].getidenchere()==enchere[v].getidenchere()) {
+                            n=1;
+                        }
+                    }
+                }
+                if (n==0) {
+                    dtls[taille]=details[i];
+                    taille=taille+1;
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error S_Utilisateur.get_enchere_encours(Utilisateur) : "+e);
+            e.printStackTrace();
+        }
+        return dtls;
     }
 
     public static Gagnant[] get_enchere_gagner(Utilisateur utilisateur) throws Exception{
@@ -65,6 +127,7 @@ public class S_Utilisateur {
             for (int i=0;i<o.length ;i++ ) {
                 gagnant[i]=(Gagnant)o[i];
             }
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Utilisateur.get_enchere_gagner(Utilisateur) : "+e);
@@ -86,6 +149,7 @@ public class S_Utilisateur {
             for (int i=0;i<o.length ;i++ ) {
                 details[i]=(Detailsenchere)o[i];
             }
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Utilisateur.get_historique(Utilisateur) : "+e);

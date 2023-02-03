@@ -23,6 +23,7 @@ public class S_Categorie {
             connexion = new Connexion();
             Object[] o=Requete.select(connexion.getConnexion(),new Categorie(),condition,value,signe);
             categorie=(Categorie)o[0];
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Categorie.get(id) : "+e);
@@ -41,6 +42,7 @@ public class S_Categorie {
             for (int i=0;i<o.length ;i++ ) {
                 categorie[i]=(Categorie)o[i];
             }
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Categorie.get(id) : "+e);

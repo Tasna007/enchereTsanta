@@ -13,6 +13,7 @@ public class T_Utilisateur extends ObjetBDD{
     String email;
     String password;
     Date inscription;
+    int idGenre = 1;
     public T_Utilisateur() {
     }
     public T_Utilisateur(String email, String password) {
@@ -46,6 +47,12 @@ public class T_Utilisateur extends ObjetBDD{
     }
     public void setIdCompte(int idCompte) {
         this.idCompte = idCompte;
+    }
+    public int getIdGenre() {
+        return idGenre;
+    }
+    public void setIdGenre(int idGenre) {
+        this.idGenre = idGenre;
     }
     public String getNom() {
         return nom;

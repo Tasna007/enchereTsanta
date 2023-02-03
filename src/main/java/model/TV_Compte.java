@@ -6,6 +6,8 @@ public class TV_Compte extends ObjetBDD{
     int idUtilisateur = -1234567;
     int idCompte = -1234567;
     double argent = -1234567;
+    double mise = -1234567;
+    double solde = -1234567;
     
     
     public TV_Compte() {
@@ -32,6 +34,18 @@ public class TV_Compte extends ObjetBDD{
     }
     public void setArgent(double argent) {
         this.argent = argent;
+    }
+    public double getMise() {
+        return mise;
+    }
+    public void setMise(double mise) {
+        this.mise = mise;
+    }
+     public double getSolde() {
+        return solde;
+    }
+    public void setSolde(double solde) {
+        this.solde = solde;
     }
     public static TV_Compte[] cast(Object[] objet){
         TV_Compte[] retour = new TV_Compte[objet.length];

@@ -10,15 +10,15 @@ import java.sql.*;
 public class Connexion {
     
     String driver = "org.postgresql.Driver";
-    // String nameDatabase = "enchere";
     String nameDatabase = "railway";
-    // String url = "jdbc:postgresql://localhost:5432/"+nameDatabase;
+    // String nameDatabase = "railway";
     String url = "jdbc:postgresql://containers-us-west-53.railway.app:6996/"+nameDatabase;
-    // String user = "s5";
+    // String url = "jdbc:postgresql://containers-us-west-134.railway.app:6124/"+nameDatabase;
     String user = "postgres";
-    // String password = "s5";
+    // String user = "postgres";
     String password = "5PCXUgb1vMtXZYcmlKK1";
-    //    Boolean autoCommit = false;
+    // String password = "atpeoFWtkUC4HmQWkR6a";
+       // Boolean autoCommit = false;
 
     public Connection getConnexion()throws Exception{
         Connection connexion = null;

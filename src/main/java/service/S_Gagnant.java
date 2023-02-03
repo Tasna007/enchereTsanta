@@ -23,6 +23,7 @@ public class S_Gagnant {
             connexion = new Connexion();
             Object[] o=Requete.select(connexion.getConnexion(),new Gagnant(),condition,value,signe);
             gagnant=(Gagnant)o[0];
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Gagnant.get(id) : "+e);
@@ -50,6 +51,7 @@ public class S_Gagnant {
                 S_Enchere.update_etat(enchere[i]);
                 TS_Compte.updateCompteGagner(details[details.length-1].getmise(),TS_Compte.getVCompte(utilisateur.getidutilisateur()).getIdCompte());
             }
+            connexion.getConnexion().close();
         }
         catch (Exception e) {
             System.out.println("Error S_Gagnant.gagner() : "+e);
