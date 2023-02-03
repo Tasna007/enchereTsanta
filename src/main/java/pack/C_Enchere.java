@@ -151,6 +151,43 @@ public class C_Enchere {
         return null;
      }
 
+     @GetMapping("/getAllEnchere/")
+     public ResponseEntity get_enchereRehetra()
+     {
+        Enchere[] enchere=null;
+        Categorie categorie=null;
+        Utilisateur utilisateur=null;
+        JSONArray liste=null;
+        try {
+            enchere=new S_Enchere().getRehetra();
+            liste =new JSONArray();    
+            for(int i=0;i<enchere.length;i++){
+                categorie=new S_Categorie().get(enchere[i].getidcategorie());
+                utilisateur=new S_Utilisateur().get(enchere[i].getidutilisateur());
+                JSONObject obj=new JSONObject();
+                obj.put("idenchere",enchere[i].getidenchere());    
+                obj.put("produit",enchere[i].getproduit());    
+                obj.put("prix_planche",enchere[i].getprix_planche());    
+                obj.put("duree",enchere[i].getduree());    
+                obj.put("ajout",enchere[i].getajout());    
+                obj.put("description",enchere[i].getdescription());    
+                obj.put("etat",enchere[i].getetat());
+                obj.put("categorie",categorie.getcategorie());
+                obj.put("idutilisateur",utilisateur.getidutilisateur());    
+                obj.put("nom",utilisateur.getnom());    
+                obj.put("prenom",utilisateur.getprenom());    
+                obj.put("email",utilisateur.getemail()); 
+                liste.add(obj);
+            }
+            return ResponseEntity.accepted().body(liste);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            // return e.getMessage();
+        }
+        return null;
+     }
+
     @GetMapping("/enchere_photos/{id}")
      public ResponseEntity get_photos(@PathVariable int id)
      {
@@ -194,5 +231,28 @@ public class C_Enchere {
             // return e.getMessage();
         }
         return null;
+     }
+     @GetMapping("/get_byid/{id}")
+     public String get_byid(@PathVariable int id)
+     {
+        Enchere enchere=null;
+        Utilisateur utilisateur=null;
+        Categorie categorie=null;
+        JSONObject obj=new JSONObject();    
+        try {
+            enchere=new S_Enchere().get(id);
+            utilisateur=S_Enchere.get_utilisateur(enchere);
+            categorie=new S_Categorie().get(enchere.getidcategorie());
+            obj.put("idutilisateur",utilisateur.getidutilisateur());    
+            obj.put("nom",utilisateur.getnom());    
+            obj.put("prenom",utilisateur.getprenom());    
+            obj.put("email",utilisateur.getemail());    
+            obj.put("categorie",categorie.getcategorie());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+        return obj.toJSONString();
      }
  }

@@ -107,6 +107,28 @@ public class S_Enchere {
         return enchere;
     }
 
+    
+    public static Enchere[] getRehetra() throws Exception{
+        Enchere[] enchere=null;
+        Connexion connexion = null;
+        // String[] condition=new String[1];condition[0]="etat"; 
+        // String[] value=new String[1];value[0]=new Integer(etat).toString(); 
+        // String[] signe=new String[1];signe[0]="="; 
+        try{
+            connexion = new Connexion();
+            Object[] o=Requete.select(connexion.getConnexion(),new Enchere(),new String[0],new String[0],new String[0]);
+            enchere=new Enchere[o.length];
+            for (int i=0;i<o.length ;i++ ) {
+                enchere[i]=(Enchere)o[i];
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error S_Enchere.get() : "+e);
+            e.printStackTrace();
+        }
+        return enchere;
+    }
+
     public static Gagnant get_gagnant(Enchere enchere) throws Exception{
         Gagnant gagnant=null;
         Connexion connexion = null;
